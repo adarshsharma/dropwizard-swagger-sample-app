@@ -1,16 +1,8 @@
 package io.federecio.dropwizard.swagger.sample;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.*;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -36,6 +28,8 @@ public class SampleResource {
 
     @GET
     @ApiOperation("Sample endpoint with query param")
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid ID supplied", response = ErrorPojo.class),
+            @ApiResponse(code = 200, message = "success", response = SamplePojo.class) })
     @Path("/hello-with-query-param")
     public Response getWithQueryParam(@QueryParam("name") String name) {
         return Response.ok(new SamplePojo("Hello " + name, 444)).build();
@@ -49,8 +43,9 @@ public class SampleResource {
             response = SamplePojo.class
     )
     public SamplePojo postForToken(
-            @FormParam("username") @ApiParam(defaultValue = "username") String username,
-            @FormParam("password") @ApiParam(defaultValue = "q") String password
+            @FormParam("username") @ApiParam(defaultValue = "username", required = true) String username,
+            @FormParam("password") @ApiParam(defaultValue = "q", required = true) String password,
+            @ApiParam(value = "Updated user object", required = true) SampleRequest sampleRequest
     ) {
         return new SamplePojo(username, 1234);
     }
